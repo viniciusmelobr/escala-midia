@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escala Ministério de Mídia 2026/2027</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; padding: 16px; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  .header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 260px; }
+  .logo { width: 58px; height: 58px; object-fit: contain; border-radius: 12px; background: #000; padding: 6px; border: 1px solid var(--border); }
+  .brand p { margin-top: 2px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; color: var(--muted-foreground); }
+  .header h1 { font-size: 1.5rem; font-weight: 700; flex: 1; min-width: 200px; }
+  .header-badge { background: var(--primary); color: var(--primary-foreground); padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 600; }
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 16px; padding: 14px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); }
+  .controls label { font-size: 0.8rem; color: var(--muted-foreground); display: flex; flex-direction: column; gap: 4px; }
+  .controls input, .controls select { padding: 7px 10px; background: var(--background); color: var(--foreground); border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.85rem; }
+  .btn { padding: 8px 16px; border: none; border-radius: var(--radius); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; white-space: nowrap; }
+  .btn:hover { opacity: 0.85; }
+  .btn-primary { background: var(--primary); color: var(--primary-foreground); }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--foreground); }
+  .btn-sm { padding: 5px 10px; font-size: 0.75rem; }
+  .stats-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .stat-card { flex: 1; min-width: 100px; padding: 12px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); text-align: center; }
+  .stat-card .num { font-size: 1.6rem; font-weight: 700; color: var(--primary); }
+  .stat-card .lbl { font-size: 0.7rem; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.5px; }
+  .table-wrap { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  thead th { position: sticky; top: 0; z-index: 2; background: var(--card); color: var(--muted-foreground); font-weight: 600; text-align: left; padding: 10px 8px; border-bottom: 2px solid var(--border); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  tbody td { padding: 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tbody tr:hover { background: var(--accent); }
+  tbody tr:nth-child(even) { background: var(--card); }
+  tbody tr:nth-child(even):hover { background: var(--accent); }
+  .date-col { white-space: nowrap; font-weight: 600; font-size: 0.8rem; }
+  .day-badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: 600; }
+  .day-badge.sab { background: #3b82f620; color: #3b82f6; }
+  .day-badge.dom { background: #22c55e20; color: #22c55e; }
+  .person-select { width: 100%; padding: 6px 8px; background: var(--background); color: var(--foreground); border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.78rem; cursor: pointer; }
+  .month-section { margin-bottom: 24px; }
+  .month-title { font-size: 1.1rem; font-weight: 700; padding: 10px 12px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0; border-bottom: none; display: flex; align-items: center; justify-content: space-between; }
+  .month-title .count { font-size: 0.75rem; color: var(--muted-foreground); font-weight: 400; }
+  .month-table { border-radius: 0 0 var(--radius) var(--radius); }
+  .footer-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; align-items: center; justify-content: space-between; padding: 14px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); }
+  .footer-bar .msg { font-size: 0.8rem; color: var(--muted-foreground); }
+  @media (max-width: 600px) {
+    body { padding: 8px; }
+    table { font-size: 0.72rem; }
+    thead th, tbody td { padding: 6px 4px; }
+    .header h1 { font-size: 1.2rem; }
+    .btn { padding: 6px 10px; font-size: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="brand"><img src="logo-midia.jpeg" alt="Logo" class="logo"><div><h1>Escala Ministério de Mídia</h1><p>ENTREGRAM</p></div></div>
+    <span class="header-badge">5 integrantes</span>
+  </div>
+  <div class="controls">
+    <label>Pessoas (vírgula)
+      <input id="peopleInput" type="text" value="MAYANE, ARNALDO, CLAYTON, GABRIEL, VINICIUS" style="min-width:280px">
+    </label>
+    <label>Sabado
+      <input id="sabTime" type="text" value="10:00" style="width:65px">
+    </label>
+    <label>Domingo
+      <input id="domTime" type="text" value="19:00" style="width:65px">
+    </label>
+    <label>Inicio
+      <input id="startDate" type="date" value="2026-07-18">
+    </label>
+    <label>Fim
+      <input id="endDate" type="date" value="2027-07-18">
+    </label>
+    <button class="btn btn-primary" onclick="applySettings()">Atualizar</button>
+    <button class="btn btn-outline" onclick="exportCSV()">CSV</button>
+    <button class="btn btn-outline" onclick="printScale()">Imprimir</button>
+  </div>
+  <div class="stats-row" id="statsRow"></div>
+  <div id="calendar"></div>
+  <div class="footer-bar">
+    <span class="msg">Altere os nomes no seletor de cada linha ou troque tudo no campo "Pessoas" e clique em Atualizar. Depois exporte CSV ou imprima.</span>
+    <button class="btn btn-sm btn-primary" onclick="resetAll()">Resetar escala</button>
+  </div>
+</div>
+
+<script>
+var PEOPLE = ['MAYANE', 'ARNALDO', 'CLAYTON', 'GABRIEL', 'VINICIUS'];
+var SAB_TIME = '10:00';
+var DOM_TIME = '19:00';
+var START_DATE = '2026-07-18';
+var END_DATE = '2027-07-18';
+var assignments = {};
+
+function parseDate(str) { var parts = str.split('-'); return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])); }
+function formatDate(d) { var y = d.getFullYear(); var m = String(d.getMonth() + 1).padStart(2, '0'); var day = String(d.getDate()).padStart(2, '0'); return y + '-' + m + '-' + day; }
+function addDays(d, n) { var nd = new Date(d); nd.setDate(nd.getDate() + n); return nd; }
+function dayOfWeek(d) { return d.getDay(); }
+function formatDisplayDate(d) {
+  var dias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
+  var dw = dias[d.getDay()];
+  return dw + ' ' + String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
+}
+function getKey(d, tipo) { return formatDate(d) + '_' + tipo; }
+function monthName(m) { return ['Janeiro','Fevereiro','Marco','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][m]; }
+
+function generateDates() {
+  var start = parseDate(START_DATE), end = parseDate(END_DATE), events = [], d = new Date(start);
+  while (d <= end) {
+    var dw = dayOfWeek(d);
+    if (dw === 6) events.push({ date: new Date(d), tipo: 'sab', time: SAB_TIME });
+    if (dw === 0) events.push({ date: new Date(d), tipo: 'dom', time: DOM_TIME });
+    d = addDays(d, 1);
+  }
+  return events;
+}
+
+function autoAssign(events) {
+  var a = {}, idx = 0;
+  for (var i = 0; i < events.length; i++) { var key = getKey(events[i].date, events[i].tipo); a[key] = idx % PEOPLE.length; idx++; }
+  return a;
+}
+
+function countPerPerson() {
+  var counts = {};
+  for (var i = 0; i < PEOPLE.length; i++) counts[i] = 0;
+  Object.keys(assignments).forEach(function(k) { var pi = assignments[k]; if (counts[pi] !== undefined) counts[pi]++; });
+  return counts;
+}
+
+function renderAll() {
+  var events = generateDates(), counts = countPerPerson();
+  var statsHtml = '';
+  for (var i = 0; i < PEOPLE.length; i++) statsHtml += '<div class="stat-card"><div class="num">' + (counts[i] || 0) + '</div><div class="lbl">' + PEOPLE[i] + '</div></div>';
+  document.getElementById('statsRow').innerHTML = statsHtml;
+
+  var months = {};
+  for (var j = 0; j < events.length; j++) {
+    var ev = events[j], mKey = ev.date.getFullYear() + '-' + String(ev.date.getMonth() + 1).padStart(2, '0');
+    if (!months[mKey]) months[mKey] = [];
+    months[mKey].push(ev);
+  }
+
+  var calHtml = '', monthKeys = Object.keys(months).sort();
+  for (var mk = 0; mk < monthKeys.length; mk++) {
+    var mKey = monthKeys[mk], parts = mKey.split('-'), mIdx = Number(parts[1]) - 1, yr = parts[0], evs = months[mKey];
+    calHtml += '<div class="month-section"><div class="month-title">' + monthName(mIdx) + ' de ' + yr + ' <span class="count">' + evs.length + ' cultos</span></div><div class="table-wrap month-table"><table><thead><tr><th>Data</th><th>Dia</th><th>Horario</th><th>Responsavel</th></tr></thead><tbody>';
+    for (var e = 0; e < evs.length; e++) {
+      var ev = evs[e], key = getKey(ev.date, ev.tipo), pi = assignments[key] !== undefined ? assignments[key] : 0;
+      var cssClass = ev.tipo === 'sab' ? 'sab' : 'dom';
+      calHtml += '<tr><td class="date-col">' + formatDisplayDate(ev.date) + '</td><td><span class="day-badge ' + cssClass + '">' + (ev.tipo === 'sab' ? 'Sabado' : 'Domingo') + '</span></td><td>' + ev.time + '</td><td><select class="person-select" data-key="' + key + '" onchange="onSelectChange(this)">';
+      for (var pi2 = 0; pi2 < PEOPLE.length; pi2++) calHtml += '<option value="' + pi2 + '"' + (pi2 === pi ? ' selected' : '') + '>' + PEOPLE[pi2] + '</option>';
+      calHtml += '</select></td></tr>';
+    }
+    calHtml += '</tbody></table></div></div>';
+  }
+  document.getElementById('calendar').innerHTML = calHtml;
+}
+
+function onSelectChange(sel) { var key = sel.getAttribute('data-key'); assignments[key] = Number(sel.value); renderAll(); }
+
+function applySettings() {
+  var raw = document.getElementById('peopleInput').value;
+  var newPeople = raw.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s.length > 0; });
+  if (newPeople.length === 0) { PEOPLE = ['Pessoa 1']; }
+  else {
+    var oldPeople = PEOPLE; PEOPLE = newPeople; var remap = {};
+    for (var i = 0; i < oldPeople.length; i++) remap[i] = (i < newPeople.length) ? i : 0;
+    Object.keys(assignments).forEach(function(k) { var oldIdx = assignments[k]; assignments[k] = (remap[oldIdx] !== undefined) ? remap[oldIdx] : 0; });
+  }
+  SAB_TIME = document.getElementById('sabTime').value || '10:00';
+  DOM_TIME = document.getElementById('domTime').value || '19:00';
+  START_DATE = document.getElementById('startDate').value;
+  END_DATE = document.getElementById('endDate').value;
+  var events = generateDates(); assignments = autoAssign(events); renderAll();
+}
+
+function resetAll() { var events = generateDates(); assignments = autoAssign(events); renderAll(); }
+
+function exportCSV() {
+  var events = generateDates(), lines = ['Data,Dia,Horario,Responsavel'];
+  for (var i = 0; i < events.length; i++) {
+    var ev = events[i], key = getKey(ev.date, ev.tipo), pi = assignments[key] !== undefined ? assignments[key] : 0;
+    lines.push(formatDisplayDate(ev.date) + ',' + (ev.tipo === 'sab' ? 'Sabado' : 'Domingo') + ',' + ev.time + ',' + PEOPLE[pi]);
+  }
+  var blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' }), url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = 'escala-midia-' + START_DATE + '-a-' + END_DATE + '.csv'; a.click(); URL.revokeObjectURL(url);
+}
+
+function printScale() { window.print(); }
+
+(function() {
+  document.getElementById('startDate').value = START_DATE;
+  document.getElementById('endDate').value = END_DATE;
+  var events = generateDates(); assignments = autoAssign(events); renderAll();
+})();
+</script>
+</body>
+</html>
