@@ -45,8 +45,7 @@
   .footer-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; align-items: center; justify-content: space-between; padding: 14px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); }
   .footer-bar .msg { font-size: 0.8rem; color: var(--muted-foreground); }
   @media (max-width: 600px) {
-    body { padding: 8px; }
-    table { font-size: 0.72rem; }
+    body { padding: 8px; } table { font-size: 0.72rem; }
     thead th, tbody td { padding: 6px 4px; }
     .header h1 { font-size: 1.2rem; }
     .btn { padding: 6px 10px; font-size: 0.75rem; }
@@ -82,7 +81,7 @@
   <div class="stats-row" id="statsRow"></div>
   <div id="calendar"></div>
   <div class="footer-bar">
-    <span class="msg">Altere os nomes no seletor de cada linha ou troque tudo no campo "Pessoas" e clique em Atualizar. Depois exporte CSV ou imprima.</span>
+    <span class="msg">Rodizio por SEMANA: sábado + domingo com a mesma pessoa. Ordem: Mayane → Arnaldo → Clayton → Gabriel → Vinicius.</span>
     <button class="btn btn-sm btn-primary" onclick="resetAll()">Resetar escala</button>
   </div>
 </div>
@@ -107,6 +106,15 @@ function formatDisplayDate(d) {
 function getKey(d, tipo) { return formatDate(d) + '_' + tipo; }
 function monthName(m) { return ['Janeiro','Fevereiro','Marco','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][m]; }
 
+function weekMonday(d) {
+  var monday = new Date(d);
+  var day = monday.getDay();
+  var diff = (day === 0) ? -6 : 1 - day;
+  monday.setDate(monday.getDate() + diff);
+  monday.setHours(0,0,0,0);
+  return monday;
+}
+
 function generateDates() {
   var start = parseDate(START_DATE), end = parseDate(END_DATE), events = [], d = new Date(start);
   while (d <= end) {
@@ -118,9 +126,21 @@ function generateDates() {
   return events;
 }
 
-function autoAssign(events) {
-  var a = {}, idx = 0;
-  for (var i = 0; i < events.length; i++) { var key = getKey(events[i].date, events[i].tipo); a[key] = idx % PEOPLE.length; idx++; }
+function autoAssignByWeek(events) {
+  var a = {};
+  var weekIdx = 0;
+  var lastMonday = null;
+  events.sort(function(x, y) { return x.date - y.date; });
+  for (var i = 0; i < events.length; i++) {
+    var monday = weekMonday(events[i].date);
+    var mondayKey = formatDate(monday);
+    if (lastMonday === null || mondayKey !== lastMonday) {
+      if (lastMonday !== null) weekIdx++;
+      lastMonday = mondayKey;
+    }
+    var key = getKey(events[i].date, events[i].tipo);
+    a[key] = weekIdx % PEOPLE.length;
+  }
   return a;
 }
 
@@ -175,10 +195,10 @@ function applySettings() {
   DOM_TIME = document.getElementById('domTime').value || '19:00';
   START_DATE = document.getElementById('startDate').value;
   END_DATE = document.getElementById('endDate').value;
-  var events = generateDates(); assignments = autoAssign(events); renderAll();
+  var events = generateDates(); assignments = autoAssignByWeek(events); renderAll();
 }
 
-function resetAll() { var events = generateDates(); assignments = autoAssign(events); renderAll(); }
+function resetAll() { var events = generateDates(); assignments = autoAssignByWeek(events); renderAll(); }
 
 function exportCSV() {
   var events = generateDates(), lines = ['Data,Dia,Horario,Responsavel'];
@@ -195,7 +215,7 @@ function printScale() { window.print(); }
 (function() {
   document.getElementById('startDate').value = START_DATE;
   document.getElementById('endDate').value = END_DATE;
-  var events = generateDates(); assignments = autoAssign(events); renderAll();
+  var events = generateDates(); assignments = autoAssignByWeek(events); renderAll();
 })();
 </script>
 </body>
