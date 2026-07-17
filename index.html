@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Escala Ministério de Mídia 2026/2027</title>
+<title>Escala Ministério de Mídia - ENTREGRAM</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: system-ui, -apple-system, sans-serif; padding: 16px; }
@@ -22,10 +22,17 @@
   .btn-primary { background: var(--primary); color: var(--primary-foreground); }
   .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--foreground); }
   .btn-sm { padding: 5px 10px; font-size: 0.75rem; }
+  .tabs { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab-btn { padding: 8px 18px; background: var(--card); color: var(--muted-foreground); border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+  .tab-btn:hover { background: var(--accent); }
+  .tab-btn.active { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
   .stats-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
   .stat-card { flex: 1; min-width: 100px; padding: 12px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); text-align: center; }
   .stat-card .num { font-size: 1.6rem; font-weight: 700; color: var(--primary); }
   .stat-card .lbl { font-size: 0.7rem; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-card.apoio .num { color: var(--success); }
   .table-wrap { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
   table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
   thead th { position: sticky; top: 0; z-index: 2; background: var(--card); color: var(--muted-foreground); font-weight: 600; text-align: left; padding: 10px 8px; border-bottom: 2px solid var(--border); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -44,11 +51,27 @@
   .month-table { border-radius: 0 0 var(--radius) var(--radius); }
   .footer-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; align-items: center; justify-content: space-between; padding: 14px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); }
   .footer-bar .msg { font-size: 0.8rem; color: var(--muted-foreground); }
+  .idea-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+  .idea-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+  .idea-card h3 { font-size: 0.9rem; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .idea-card p { font-size: 0.78rem; color: var(--muted-foreground); line-height: 1.5; }
+  .idea-card .tag { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 0.65rem; font-weight: 600; margin-right: 4px; margin-top: 6px; }
+  .tag-dia { background: var(--primary); color: var(--primary-foreground); }
+  .tag-freq { background: var(--success); color: #fff; }
+  .tag-pauta { background: var(--warning); color: #000; }
+  .week-planner { margin-top: 20px; }
+  .week-planner h1 { font-size: 1.2rem; margin-bottom: 12px; }
+  .day-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .day-row:last-child { border-bottom: none; }
+  .day-label { width: 90px; flex-shrink: 0; font-weight: 700; font-size: 0.82rem; padding-top: 2px; }
+  .day-items { flex: 1; display: flex; flex-wrap: wrap; gap: 6px; }
+  .day-chip { padding: 4px 10px; border-radius: 99px; font-size: 0.72rem; font-weight: 500; background: var(--accent); color: var(--foreground); border: 1px solid var(--border); }
   @media (max-width: 600px) {
     body { padding: 8px; } table { font-size: 0.72rem; }
     thead th, tbody td { padding: 6px 4px; }
     .header h1 { font-size: 1.2rem; }
     .btn { padding: 6px 10px; font-size: 0.75rem; }
+    .idea-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -58,34 +81,77 @@
     <div class="brand"><img src="logo-midia.jpeg" alt="Logo" class="logo"><div><h1>Escala Ministério de Mídia</h1><p>ENTREGRAM</p></div></div>
     <span class="header-badge">5 integrantes</span>
   </div>
-  <div class="controls">
-    <label>Pessoas (vírgula)
-      <input id="peopleInput" type="text" value="MAYANE, ARNALDO, CLAYTON, GABRIEL, VINICIUS" style="min-width:280px">
-    </label>
-    <label>Sabado
-      <input id="sabTime" type="text" value="10:00" style="width:65px">
-    </label>
-    <label>Domingo
-      <input id="domTime" type="text" value="19:00" style="width:65px">
-    </label>
-    <label>Inicio
-      <input id="startDate" type="date" value="2026-07-04">
-    </label>
-    <label>Fim
-      <input id="endDate" type="date" value="2027-07-18">
-    </label>
-    <button class="btn btn-primary" onclick="applySettings()">Atualizar</button>
-    <button class="btn btn-outline" onclick="exportCSV()">CSV</button>
-    <button class="btn btn-outline" onclick="printScale()">Imprimir</button>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('escala')">Escala</button>
+    <button class="tab-btn" onclick="switchTab('ideias')">Ideias & Plano</button>
   </div>
-  <div class="stats-row" id="statsRow"></div>
-  <div id="calendar"></div>
-  <div class="footer-bar">
-    <span class="msg">Rodizio por SEMANA: sábado + domingo com a mesma pessoa. Ordem: Mayane → Arnaldo → Clayton → Gabriel → Vinicius.</span>
-    <button class="btn btn-sm btn-primary" onclick="resetAll()">Resetar escala</button>
+  <div id="tab-escala" class="tab-content active">
+    <div class="controls">
+      <label>Pessoas (vírgula)
+        <input id="peopleInput" type="text" value="MAYANE, ARNALDO, CLAYTON, GABRIEL, VINICIUS" style="min-width:280px">
+      </label>
+      <label>Sabado
+        <input id="sabTime" type="text" value="10:00" style="width:65px">
+      </label>
+      <label>Domingo
+        <input id="domTime" type="text" value="19:00" style="width:65px">
+      </label>
+      <label>Inicio
+        <input id="startDate" type="date" value="2026-07-04">
+      </label>
+      <label>Fim
+        <input id="endDate" type="date" value="2027-07-18">
+      </label>
+      <button class="btn btn-primary" onclick="applySettings()">Atualizar</button>
+      <button class="btn btn-outline" onclick="exportCSV()">CSV</button>
+      <button class="btn btn-outline" onclick="printScale()">Imprimir</button>
+    </div>
+    <div class="stats-row" id="statsRow"></div>
+    <div id="calendar"></div>
+    <div class="footer-bar">
+      <span class="msg">Rodizio mensal: 1a sem = Mayane | 2a sem = Arnaldo | 3a sem = Clayton | 4a sem = Gabriel. Vinicius = apoio e substituto.</span>
+      <button class="btn btn-sm btn-primary" onclick="resetAll()">Resetar escala</button>
+    </div>
+  </div>
+  <div id="tab-ideias" class="tab-content">
+    <h2 style="font-size:1.2rem;margin-bottom:4px">Plano Semanal de Conteudo</h2>
+    <p style="font-size:0.8rem;color:var(--muted-foreground);margin-bottom:16px">Todo mes, esse padrao se repete.</p>
+    <div class="week-planner">
+      <div class="day-row"><div class="day-label">Segunda</div><div class="day-items"><span class="day-chip">Postar Reels do culto</span><span class="day-chip">Clip do louvor ou pregacao</span></div></div>
+      <div class="day-row"><div class="day-label">Terca</div><div class="day-items"><span class="day-chip" style="background:var(--primary);color:var(--primary-foreground)">ENTRE EM ACAO</span><span class="day-chip">Versiculo + chamada pratica</span><span class="day-chip">Foto/imagem motivacional</span></div></div>
+      <div class="day-row"><div class="day-label">Quarta</div><div class="day-items"><span class="day-chip">Versiculo do dia + imagem</span><span class="day-chip">Caixinha Perguntas/Oracao (15d)</span></div></div>
+      <div class="day-row"><div class="day-label">Quinta</div><div class="day-items"><span class="day-chip" style="background:var(--success);color:#fff">REELS ENGRAÇADOS</span><span class="day-chip">Trends, bastidores, erros</span></div></div>
+      <div class="day-row"><div class="day-label">Sexta</div><div class="day-items"><span class="day-chip" style="background:var(--warning);color:#000">DUMP DO MES</span><span class="day-chip">Aquecimento pro culto</span><span class="day-chip">Chamada "Amanha tem!"</span></div></div>
+      <div class="day-row"><div class="day-label">Sabado</div><div class="day-items"><span class="day-chip" style="background:#6366f1;color:#fff">CULTO 10h</span><span class="day-chip">Stories ao vivo</span><span class="day-chip">Fotos & videos</span><span class="day-chip">Background ativado</span></div></div>
+      <div class="day-row"><div class="day-label">Domingo</div><div class="day-items"><span class="day-chip" style="background:#f59e0b;color:#000">CULTO 19h</span><span class="day-chip">Stories ao vivo</span><span class="day-chip">Gravacao meditacao com pastor</span></div></div>
+    </div>
+    <h2 style="font-size:1.2rem;margin:28px 0 12px">Banco de Ideias</h2>
+    <div class="idea-grid">
+      <div class="idea-card"><h3>ENTRE EM ACAO</h3><p>Post fixo toda terca-feira com versiculo + desafio pratico da semana.</p><span class="tag tag-dia">Terca</span><span class="tag tag-freq">Semanal</span></div>
+      <div class="idea-card"><h3>DUMP DO MES</h3><p>Post de sexta com os melhores momentos do mes compilados: retrospectiva rapida.</p><span class="tag tag-dia">Sexta</span><span class="tag tag-freq">Mensal</span></div>
+      <div class="idea-card"><h3>REELS ENGRAÇADOS</h3><p>Toda quinta: trends, erros de gravacao, momentos espontaneos, challenges.</p><span class="tag tag-dia">Quinta</span><span class="tag tag-freq">Semanal</span></div>
+      <div class="idea-card"><h3>REELS INSPIRADORES</h3><p>Frases impactantes da pregacao com audio + texto na tela. Testemunhos rapidos.</p><span class="tag tag-dia">Segunda</span><span class="tag tag-freq">Semanal</span></div>
+      <div class="idea-card"><h3>CAIXINHA DE PERGUNTAS</h3><p>A cada 15 dias nos Stories: "Tem duvida? Pergunta aqui." Respostas no story seguinte.</p><span class="tag tag-dia">Quarta</span><span class="tag tag-freq">Quinzenal</span></div>
+      <div class="idea-card"><h3>CAIXINHA DE ORAÇAO</h3><p>A cada 15 dias nos Stories (intercalado): "Deixe seu pedido de oracao."</p><span class="tag tag-dia">Quarta</span><span class="tag tag-freq">Quinzenal</span></div>
+      <div class="idea-card"><h3>MEDITAÇAO DO DIA</h3><p>Gravar com o pastor uma reflexao de 1-2 min. Post no Feed + Stories.</p><span class="tag tag-dia">Domingo</span><span class="tag tag-freq">Semanal</span></div>
+      <div class="idea-card"><h3>ATIVAR BACKGROUND</h3><p>Durante os cultos: foto do pulpito com frase da pregacao. Cria identidade visual.</p><span class="tag tag-dia">Sab/Dom</span><span class="tag tag-freq">Todo culto</span></div>
+      <div class="idea-card"><h3>CAIXA DE SUGESTOES</h3><p>Link fixo na bio: "Sugira algo pro nosso Instagram!" Feedback direto da comunidade.</p><span class="tag tag-dia">Fixo</span><span class="tag tag-freq">Continuo</span></div>
+    </div>
+    <h2 style="font-size:1.2rem;margin:28px 0 12px">Pontos de Atencao</h2>
+    <div class="idea-grid">
+      <div class="idea-card" style="border-left:3px solid var(--warning)"><h3>Ajustar luz ao ler a Biblia</h3><p>Sempre verificar iluminacao no rosto ao gravar leitura biblica. Luz natural de frente ou ring light.</p><span class="tag tag-pauta">Pauta</span></div>
+      <div class="idea-card" style="border-left:3px solid var(--primary)"><h3>Caixa de sugestoes para pontuar</h3><p>Usar a caixinha como termometro: "O que podemos melhorar?" A cada 15 dias, pontuar na reuniao.</p><span class="tag tag-pauta">Pauta</span></div>
+    </div>
+    <h2 style="font-size:1.2rem;margin:28px 0 12px">Estrutura do Time (Padrao Mensal)</h2>
+    <div class="idea-grid">
+      <div class="idea-card"><h3>1a Semana: MAYANE</h3><p>Responsavel pelo culto (Sab + Dom) + 1 Reels semanal + post Terca "Entre em Acao"</p></div>
+      <div class="idea-card"><h3>2a Semana: ARNALDO</h3><p>Responsavel pelo culto (Sab + Dom) + 1 Reels semanal + post Terca "Entre em Acao"</p></div>
+      <div class="idea-card"><h3>3a Semana: CLAYTON</h3><p>Responsavel pelo culto (Sab + Dom) + 1 Reels semanal + post Terca "Entre em Acao"</p></div>
+      <div class="idea-card"><h3>4a Semana: GABRIEL</h3><p>Responsavel pelo culto (Sab + Dom) + 1 Reels semanal + post Terca "Entre em Acao"</p></div>
+      <div class="idea-card" style="border:2px solid var(--success)"><h3>VINICIUS: Apoio & Substituto</h3><p>Cobre ausencias. Gerencia caixinhas de pergunta/oracao (quinzenal). Cuida de metricas. DUMP DO MES.</p></div>
+    </div>
   </div>
 </div>
-
 <script>
 var PEOPLE = ['MAYANE', 'ARNALDO', 'CLAYTON', 'GABRIEL', 'VINICIUS'];
 var SAB_TIME = '10:00';
@@ -94,129 +160,97 @@ var START_DATE = '2026-07-04';
 var END_DATE = '2027-07-18';
 var assignments = {};
 
-function parseDate(str) { var parts = str.split('-'); return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])); }
-function formatDate(d) { var y = d.getFullYear(); var m = String(d.getMonth() + 1).padStart(2, '0'); var day = String(d.getDate()).padStart(2, '0'); return y + '-' + m + '-' + day; }
-function addDays(d, n) { var nd = new Date(d); nd.setDate(nd.getDate() + n); return nd; }
-function dayOfWeek(d) { return d.getDay(); }
-function formatDisplayDate(d) {
-  var dias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
-  var dw = dias[d.getDay()];
-  return dw + ' ' + String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
-}
-function getKey(d, tipo) { return formatDate(d) + '_' + tipo; }
-function monthName(m) { return ['Janeiro','Fevereiro','Marco','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][m]; }
-
-function weekMonday(d) {
-  var monday = new Date(d);
-  var day = monday.getDay();
-  var diff = (day === 0) ? -6 : 1 - day;
-  monday.setDate(monday.getDate() + diff);
-  monday.setHours(0,0,0,0);
-  return monday;
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+  document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active')});
+  document.querySelector('[onclick="switchTab(\''+tab+'\')"]').classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
 }
 
-function generateDates() {
-  var start = parseDate(START_DATE), end = parseDate(END_DATE), events = [], d = new Date(start);
-  while (d <= end) {
-    var dw = dayOfWeek(d);
-    if (dw === 6) events.push({ date: new Date(d), tipo: 'sab', time: SAB_TIME });
-    if (dw === 0) events.push({ date: new Date(d), tipo: 'dom', time: DOM_TIME });
-    d = addDays(d, 1);
-  }
+function parseDate(str){var parts=str.split('-');return new Date(Number(parts[0]),Number(parts[1])-1,Number(parts[2]))}
+function formatDate(d){var y=d.getFullYear();var m=String(d.getMonth()+1).padStart(2,'0');var day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day}
+function addDays(d,n){var nd=new Date(d);nd.setDate(nd.getDate()+n);return nd}
+function dayOfWeek(d){return d.getDay()}
+function formatDisplayDate(d){var dias=['Dom','Seg','Ter','Qua','Qui','Sex','Sab'];var dw=dias[d.getDay()];return dw+' '+String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()}
+function getKey(d,tipo){return formatDate(d)+'_'+tipo}
+function monthName(m){return ['Janeiro','Fevereiro','Marco','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][m]}
+
+function weekMonday(d){var monday=new Date(d);var day=monday.getDay();var diff=(day===0)?-6:1-day;monday.setDate(monday.getDate()+diff);monday.setHours(0,0,0,0);return monday}
+
+function generateDates(){
+  var start=parseDate(START_DATE),end=parseDate(END_DATE),events=[],d=new Date(start);
+  while(d<=end){var dw=dayOfWeek(d);if(dw===6)events.push({date:new Date(d),tipo:'sab',time:SAB_TIME});if(dw===0)events.push({date:new Date(d),tipo:'dom',time:DOM_TIME});d=addDays(d,1)}
   return events;
 }
 
-function autoAssignByWeek(events) {
-  var a = {};
-  var weekIdx = 0;
-  var lastMonday = null;
-  events.sort(function(x, y) { return x.date - y.date; });
-  for (var i = 0; i < events.length; i++) {
-    var monday = weekMonday(events[i].date);
-    var mondayKey = formatDate(monday);
-    if (lastMonday === null || mondayKey !== lastMonday) {
-      if (lastMonday !== null) weekIdx++;
-      lastMonday = mondayKey;
-    }
-    var key = getKey(events[i].date, events[i].tipo);
-    a[key] = weekIdx % PEOPLE.length;
+function autoAssignByWeek(events){
+  var a={},weekIdx=0,lastMonday=null;
+  events.sort(function(x,y){return x.date-y.date});
+  for(var i=0;i<events.length;i++){
+    var monday=weekMonday(events[i].date),mondayKey=formatDate(monday);
+    if(lastMonday===null||mondayKey!==lastMonday){if(lastMonday!==null)weekIdx++;lastMonday=mondayKey}
+    var key=getKey(events[i].date,events[i].tipo);a[key]=weekIdx%4;
   }
   return a;
 }
 
-function countPerPerson() {
-  var counts = {};
-  for (var i = 0; i < PEOPLE.length; i++) counts[i] = 0;
-  Object.keys(assignments).forEach(function(k) { var pi = assignments[k]; if (counts[pi] !== undefined) counts[pi]++; });
+function countPerPerson(){
+  var counts={};for(var i=0;i<PEOPLE.length;i++)counts[i]=0;
+  Object.keys(assignments).forEach(function(k){var pi=assignments[k];if(counts[pi]!==undefined)counts[pi]++});
   return counts;
 }
 
-function renderAll() {
-  var events = generateDates(), counts = countPerPerson();
-  var statsHtml = '';
-  for (var i = 0; i < PEOPLE.length; i++) statsHtml += '<div class="stat-card"><div class="num">' + (counts[i] || 0) + '</div><div class="lbl">' + PEOPLE[i] + '</div></div>';
-  document.getElementById('statsRow').innerHTML = statsHtml;
+function renderAll(){
+  var events=generateDates(),counts=countPerPerson();
+  var statsHtml='';
+  for(var i=0;i<PEOPLE.length;i++){var isApoio=(i===4);statsHtml+='<div class="stat-card'+(isApoio?' apoio':'')+'"><div class="num">'+(counts[i]||0)+'</div><div class="lbl">'+PEOPLE[i]+(isApoio?' (apoio)':'')+'</div></div>'}
+  document.getElementById('statsRow').innerHTML=statsHtml;
 
-  var months = {};
-  for (var j = 0; j < events.length; j++) {
-    var ev = events[j], mKey = ev.date.getFullYear() + '-' + String(ev.date.getMonth() + 1).padStart(2, '0');
-    if (!months[mKey]) months[mKey] = [];
-    months[mKey].push(ev);
-  }
+  var months={};
+  for(var j=0;j<events.length;j++){var ev=events[j],mKey=ev.date.getFullYear()+'-'+String(ev.date.getMonth()+1).padStart(2,'0');if(!months[mKey])months[mKey]=[];months[mKey].push(ev)}
 
-  var calHtml = '', monthKeys = Object.keys(months).sort();
-  for (var mk = 0; mk < monthKeys.length; mk++) {
-    var mKey = monthKeys[mk], parts = mKey.split('-'), mIdx = Number(parts[1]) - 1, yr = parts[0], evs = months[mKey];
-    calHtml += '<div class="month-section"><div class="month-title">' + monthName(mIdx) + ' de ' + yr + ' <span class="count">' + evs.length + ' cultos</span></div><div class="table-wrap month-table"><table><thead><tr><th>Data</th><th>Dia</th><th>Horario</th><th>Responsavel</th></tr></thead><tbody>';
-    for (var e = 0; e < evs.length; e++) {
-      var ev = evs[e], key = getKey(ev.date, ev.tipo), pi = assignments[key] !== undefined ? assignments[key] : 0;
-      var cssClass = ev.tipo === 'sab' ? 'sab' : 'dom';
-      calHtml += '<tr><td class="date-col">' + formatDisplayDate(ev.date) + '</td><td><span class="day-badge ' + cssClass + '">' + (ev.tipo === 'sab' ? 'Sabado' : 'Domingo') + '</span></td><td>' + ev.time + '</td><td><select class="person-select" data-key="' + key + '" onchange="onSelectChange(this)">';
-      for (var pi2 = 0; pi2 < PEOPLE.length; pi2++) calHtml += '<option value="' + pi2 + '"' + (pi2 === pi ? ' selected' : '') + '>' + PEOPLE[pi2] + '</option>';
-      calHtml += '</select></td></tr>';
+  var calHtml='',monthKeys=Object.keys(months).sort();
+  for(var mk=0;mk<monthKeys.length;mk++){
+    var mKey=monthKeys[mk],parts=mKey.split('-'),mIdx=Number(parts[1])-1,yr=parts[0],evs=months[mKey];
+    calHtml+='<div class="month-section"><div class="month-title">'+monthName(mIdx)+' de '+yr+' <span class="count">'+evs.length+' cultos</span></div><div class="table-wrap month-table"><table><thead><tr><th>Data</th><th>Dia</th><th>Horario</th><th>Responsavel</th></tr></thead><tbody>';
+    for(var e=0;e<evs.length;e++){
+      var ev=evs[e],key=getKey(ev.date,ev.tipo),pi=assignments[key]!==undefined?assignments[key]:0;
+      var cssClass=ev.tipo==='sab'?'sab':'dom';
+      calHtml+='<tr><td class="date-col">'+formatDisplayDate(ev.date)+'</td><td><span class="day-badge '+cssClass+'">'+(ev.tipo==='sab'?'Sabado':'Domingo')+'</span></td><td>'+ev.time+'</td><td><select class="person-select" data-key="'+key+'" onchange="onSelectChange(this)">';
+      for(var pi2=0;pi2<PEOPLE.length;pi2++)calHtml+='<option value="'+pi2+'"'+(pi2===pi?' selected':'')+'>'+PEOPLE[pi2]+'</option>';
+      calHtml+='</select></td></tr>';
     }
-    calHtml += '</tbody></table></div></div>';
+    calHtml+='</tbody></table></div></div>';
   }
-  document.getElementById('calendar').innerHTML = calHtml;
+  document.getElementById('calendar').innerHTML=calHtml;
 }
 
-function onSelectChange(sel) { var key = sel.getAttribute('data-key'); assignments[key] = Number(sel.value); renderAll(); }
+function onSelectChange(sel){var key=sel.getAttribute('data-key');assignments[key]=Number(sel.value);renderAll()}
 
-function applySettings() {
-  var raw = document.getElementById('peopleInput').value;
-  var newPeople = raw.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s.length > 0; });
-  if (newPeople.length === 0) { PEOPLE = ['Pessoa 1']; }
-  else {
-    var oldPeople = PEOPLE; PEOPLE = newPeople; var remap = {};
-    for (var i = 0; i < oldPeople.length; i++) remap[i] = (i < newPeople.length) ? i : 0;
-    Object.keys(assignments).forEach(function(k) { var oldIdx = assignments[k]; assignments[k] = (remap[oldIdx] !== undefined) ? remap[oldIdx] : 0; });
-  }
-  SAB_TIME = document.getElementById('sabTime').value || '10:00';
-  DOM_TIME = document.getElementById('domTime').value || '19:00';
-  START_DATE = document.getElementById('startDate').value;
-  END_DATE = document.getElementById('endDate').value;
-  var events = generateDates(); assignments = autoAssignByWeek(events); renderAll();
+function applySettings(){
+  var raw=document.getElementById('peopleInput').value;
+  var newPeople=raw.split(',').map(function(s){return s.trim()}).filter(function(s){return s.length>0});
+  if(newPeople.length===0){PEOPLE=['Pessoa 1']}
+  else{var oldPeople=PEOPLE;PEOPLE=newPeople;var remap={};for(var i=0;i<oldPeople.length;i++)remap[i]=(i<newPeople.length)?i:0;Object.keys(assignments).forEach(function(k){var oldIdx=assignments[k];assignments[k]=(remap[oldIdx]!==undefined)?remap[oldIdx]:0})}
+  SAB_TIME=document.getElementById('sabTime').value||'10:00';
+  DOM_TIME=document.getElementById('domTime').value||'19:00';
+  START_DATE=document.getElementById('startDate').value;
+  END_DATE=document.getElementById('endDate').value;
+  var events=generateDates();assignments=autoAssignByWeek(events);renderAll();
 }
 
-function resetAll() { var events = generateDates(); assignments = autoAssignByWeek(events); renderAll(); }
+function resetAll(){var events=generateDates();assignments=autoAssignByWeek(events);renderAll()}
 
-function exportCSV() {
-  var events = generateDates(), lines = ['Data,Dia,Horario,Responsavel'];
-  for (var i = 0; i < events.length; i++) {
-    var ev = events[i], key = getKey(ev.date, ev.tipo), pi = assignments[key] !== undefined ? assignments[key] : 0;
-    lines.push(formatDisplayDate(ev.date) + ',' + (ev.tipo === 'sab' ? 'Sabado' : 'Domingo') + ',' + ev.time + ',' + PEOPLE[pi]);
-  }
-  var blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' }), url = URL.createObjectURL(blob), a = document.createElement('a');
-  a.href = url; a.download = 'escala-midia-' + START_DATE + '-a-' + END_DATE + '.csv'; a.click(); URL.revokeObjectURL(url);
+function exportCSV(){
+  var events=generateDates(),lines=['Data,Dia,Horario,Responsavel'];
+  for(var i=0;i<events.length;i++){var ev=events[i],key=getKey(ev.date,ev.tipo),pi=assignments[key]!==undefined?assignments[key]:0;lines.push(formatDisplayDate(ev.date)+','+(ev.tipo==='sab'?'Sabado':'Domingo')+','+ev.time+','+PEOPLE[pi])}
+  var blob=new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='escala-midia-'+START_DATE+'-a-'+END_DATE+'.csv';a.click();URL.revokeObjectURL(url)
 }
 
-function printScale() { window.print(); }
+function printScale(){window.print()}
 
-(function() {
-  document.getElementById('startDate').value = START_DATE;
-  document.getElementById('endDate').value = END_DATE;
-  var events = generateDates(); assignments = autoAssignByWeek(events); renderAll();
-})();
+(function(){document.getElementById('startDate').value=START_DATE;document.getElementById('endDate').value=END_DATE;var events=generateDates();assignments=autoAssignByWeek(events);renderAll()})();
 </script>
 </body>
 </html>
